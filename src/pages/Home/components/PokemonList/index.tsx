@@ -2,9 +2,10 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import cardsAPI from "api/cards";
+import { CardPlaceholder } from "../";
 
 function PokemonList() {
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetching, isSuccess } =
     useInfiniteQuery(
       "pokemon-list",
       ({ pageParam }) => cardsAPI.getAll({ offset: pageParam }),
@@ -14,29 +15,31 @@ function PokemonList() {
       }
     );
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <div className="container py-4">
       <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
-        {data?.pages?.map((page) =>
-          page.data?.map(({ id, name, card_images, desc }) => (
-            <li className="border rounded-md shadow-md" key={id}>
-              <Link className="p-4 w-full flex gap-4" to="/">
-                <figure className="basis-32">
-                  <img src={card_images[0].image_url_small} alt={name} />
-                </figure>
+        {isSuccess &&
+          data?.pages?.map((page) =>
+            page.data?.map(({ id, name, card_images, desc }) => (
+              <li className="border rounded-md shadow-md" key={id}>
+                <Link className="p-4 w-full flex gap-4" to="/">
+                  <figure className="basis-32">
+                    <img src={card_images[0].image_url_small} alt={name} />
+                  </figure>
 
-                <div className="grow basis-80">
-                  <h3 className="text-xl font-bold">{name}</h3>
-                  <p>{desc.slice(0, 100)}...</p>
-                </div>
-              </Link>
-            </li>
-          ))
-        )}
+                  <div className="grow basis-80">
+                    <h3 className="text-xl font-bold">{name}</h3>
+                    <p>{desc.slice(0, 100)}...</p>
+                  </div>
+                </Link>
+              </li>
+            ))
+          )}
+
+        {isLoading &&
+          Array(6)
+            .fill(null)
+            .map((_, index) => <CardPlaceholder key={index} />)}
       </ul>
 
       <div className="flex justify-center my-4">

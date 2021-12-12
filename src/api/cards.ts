@@ -10,7 +10,10 @@ export async function getAll(options?: Options): Promise<Response<Card[]>> {
   const { data } = await axios.get<Response<Card[]>>("/", {
     params: { num, offset, taple: "yes" },
   });
-  return data;
+
+  return new Promise((res) => {
+    setTimeout(() => res(data), 2000);
+  });
 }
 
 export default { getAll };
