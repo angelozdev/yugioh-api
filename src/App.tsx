@@ -1,8 +1,16 @@
+import { Route, Routes } from "react-router-dom";
+import { Fragment } from "react";
+import { Home } from "pages";
+import { Header } from "components";
+
 function App() {
   return (
-    <div>
-      <h1 className="text-amber-600">Hola mund`o</h1>
-    </div>
+    <Fragment>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Fragment>
   );
 }
 
