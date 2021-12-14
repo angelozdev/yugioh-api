@@ -1,6 +1,6 @@
 function CardPlaceholder() {
   return (
-    <li className="border rounded-md shadow-md h-36">
+    <li className="border rounded-md shadow-md h-48">
       <div className="p-4 w-full flex gap-4 h-full animate-pulse">
         <span className="basis-32 bg-gray-300 h-full inline-block" />
 

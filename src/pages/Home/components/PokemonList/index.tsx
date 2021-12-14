@@ -1,10 +1,12 @@
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
 import cardsAPI from "api/cards";
 import { CardPlaceholder } from "../";
+import { useIntersectionObserver } from "hooks";
 
 function PokemonList() {
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching, isSuccess } =
     useInfiniteQuery(
       "pokemon-list",
@@ -14,6 +16,15 @@ function PokemonList() {
         staleTime: Infinity,
       }
     );
+
+  useIntersectionObserver(
+    buttonRef,
+    { onVisible: fetchNextPage },
+    {
+      rootMargin: "500px",
+      threshold: 1,
+    }
+  );
 
   return (
     <div className="container py-4">
@@ -28,8 +39,8 @@ function PokemonList() {
                   </figure>
 
                   <div className="grow basis-80">
-                    <h3 className="text-xl font-bold">{name}</h3>
-                    <p>{desc.slice(0, 100)}...</p>
+                    <h3 className="text-xl font-bold line-clamp-1">{name}</h3>
+                    <p className="line-clamp-3">{desc}</p>
                   </div>
                 </Link>
               </li>
@@ -37,13 +48,14 @@ function PokemonList() {
           )}
 
         {isLoading &&
-          Array(6)
+          Array(10)
             .fill(null)
             .map((_, index) => <CardPlaceholder key={index} />)}
       </ul>
 
       <div className="flex justify-center my-4">
         <button
+          ref={buttonRef}
           className="px-4 py-2 bg-indigo-600 text-white rounded-sm disabled:opacity-50 inline-flex items-center shadow-sm"
           onClick={() => fetchNextPage()}
           disabled={isFetching || !hasNextPage}

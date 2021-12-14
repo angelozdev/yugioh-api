@@ -11,9 +11,7 @@ export async function getAll(options?: Options): Promise<Response<Card[]>> {
     params: { num, offset, taple: "yes" },
   });
 
-  return new Promise((res) => {
-    setTimeout(() => res(data), 2000);
-  });
+  return data;
 }
 
 export default { getAll };
