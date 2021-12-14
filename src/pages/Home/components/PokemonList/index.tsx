@@ -1,9 +1,10 @@
 import { Fragment, useRef } from "react";
-import { Link } from "react-router-dom";
 import { useInfiniteQuery } from "react-query";
+
 import cardsAPI from "api/cards";
 import { CardPlaceholder } from "../";
 import { useIntersectionObserver } from "hooks";
+import PokemonItem from "../PokemonItem";
 
 function PokemonList() {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -32,18 +33,12 @@ function PokemonList() {
         {isSuccess &&
           data?.pages?.map((page) =>
             page.data?.map(({ id, name, card_images, desc }) => (
-              <li className="border rounded-md shadow-md" key={id}>
-                <Link className="p-4 w-full flex gap-4" to="/">
-                  <figure className="basis-32">
-                    <img src={card_images[0].image_url_small} alt={name} />
-                  </figure>
-
-                  <div className="grow basis-80">
-                    <h3 className="text-xl font-bold line-clamp-1">{name}</h3>
-                    <p className="line-clamp-3">{desc}</p>
-                  </div>
-                </Link>
-              </li>
+              <PokemonItem
+                key={id}
+                name={name}
+                description={desc}
+                image={card_images[0].image_url_small}
+              />
             ))
           )}
 
