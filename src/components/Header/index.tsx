@@ -8,9 +8,10 @@ function Header() {
           <li>
             <NavLink
               className={({ isActive }) => {
-                const className =
-                  "text-white text-lg font-bold p-2 inline-block";
-                return isActive ? `${className} bg-blue-900` : className;
+                const className = "text-lg font-bold p-2 inline-block";
+                return isActive
+                  ? `${className} bg-blue-900 text-white`
+                  : className;
               }}
               to="/"
             >

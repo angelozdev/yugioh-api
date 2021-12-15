@@ -33,7 +33,7 @@ interface Meta {
 export interface Card {
   id: number;
   name: string;
-  type: string;
+  type: CardTypes;
   desc: string;
   race: string;
   archetype: string;
@@ -52,3 +52,15 @@ export interface Response<T> {
   data: T;
   meta: Meta;
 }
+
+export type CardTypes =
+  | "Spell Card"
+  | "Normal Monster"
+  | "Effect Monster"
+  | "Flip Effect Monster"
+  | "Trap Card"
+  | "Fusion Monster"
+  | "Union Effect Monster"
+  | "Pendulum Effect Monster"
+  | "Link Monster"
+  | "Synchro Tuner Monster";

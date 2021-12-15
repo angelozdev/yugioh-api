@@ -2,15 +2,15 @@ import { Fragment, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
 
 import cardsAPI from "api/cards";
-import { CardPlaceholder } from "../";
+import { CardPlaceholder } from "..";
 import { useIntersectionObserver } from "hooks";
-import PokemonItem from "../PokemonItem";
+import { CardItem } from "../";
 
-function PokemonList() {
+function CardList() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching, isSuccess } =
     useInfiniteQuery(
-      "pokemon-list",
+      "card-list",
       ({ pageParam }) => cardsAPI.getAll({ offset: pageParam }),
       {
         getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
@@ -32,14 +32,19 @@ function PokemonList() {
       <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
         {isSuccess &&
           data?.pages?.map((page) =>
-            page.data?.map(({ id, name, card_images, desc }) => (
-              <PokemonItem
-                key={id}
-                name={name}
-                description={desc}
-                image={card_images[0].image_url_small}
-              />
-            ))
+            page.data?.map(
+              ({ id, name, card_images, desc, type, archetype }) => (
+                <CardItem
+                  description={desc}
+                  id={id}
+                  images={card_images}
+                  key={id}
+                  name={name}
+                  type={type}
+                  archetype={archetype}
+                />
+              )
+            )
           )}
 
         {isLoading &&
@@ -92,4 +97,4 @@ function PokemonList() {
   );
 }
 
-export default PokemonList;
+export default CardList;
