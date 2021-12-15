@@ -13,7 +13,7 @@ function Search() {
       type="search"
       placeholder="Search card..."
       onChange={handleSearch}
-      defaultValue={searchParams.get("q") || ""}
+      value={searchParams.get("q") || ""}
     />
   );
 }

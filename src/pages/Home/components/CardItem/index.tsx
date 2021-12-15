@@ -24,7 +24,7 @@ const CardItem = memo(
           to={`/cards/${id}`}
         >
           <figure className="basis-32">
-            <img src={images[0].image_url_small} alt={name} />
+            <img loading="lazy" src={images[0].image_url_small} alt={name} />
           </figure>
 
           <div className="grow basis-80">

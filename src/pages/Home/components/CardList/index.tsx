@@ -9,24 +9,30 @@ import { useDebounceState, useIntersectionObserver } from "hooks";
 function CardList() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [searchParams] = useSearchParams();
-  const [debounceQuery, setQuery] = useDebounceState(
-    searchParams.get("q") || "",
-    500
+  const initialQuery = searchParams.get("q") || "";
+  const [debounceQuery, setQuery] = useDebounceState(initialQuery, 500);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetching,
+    isLoading,
+    isSuccess,
+  } = useInfiniteQuery(
+    ["card-list", { query: debounceQuery }],
+    ({ pageParam }) =>
+      cardsAPI.getAll({ offset: pageParam, fname: debounceQuery, num: 16 }),
+    {
+      getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
+      staleTime: Infinity,
+      retry: false,
+    }
   );
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetching, isSuccess } =
-    useInfiniteQuery(
-      ["card-list", { query: debounceQuery }],
-      ({ pageParam }) =>
-        cardsAPI.getAll({ offset: pageParam, fname: debounceQuery }),
-      {
-        getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
-        staleTime: Infinity,
-      }
-    );
 
   useIntersectionObserver(
     buttonRef,
-    { onVisible: fetchNextPage },
+    { onVisible: () => !isError && fetchNextPage() },
     {
       rootMargin: "500px",
       threshold: 1,
