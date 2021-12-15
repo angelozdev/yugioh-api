@@ -46,6 +46,8 @@ export interface Options {
   num?: number | string;
   offset?: number | string;
   fname?: string;
+  level?: number | string;
+  sort?: string;
 }
 
 export interface Response<T> {

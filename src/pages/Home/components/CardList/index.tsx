@@ -10,6 +10,8 @@ function CardList() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [searchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const level = searchParams.get("level") || "";
+  const sort = searchParams.get("sort") || "name";
   const [debounceQuery, setQuery] = useDebounceState(initialQuery, 500);
   const {
     data,
@@ -20,9 +22,15 @@ function CardList() {
     isLoading,
     isSuccess,
   } = useInfiniteQuery(
-    ["card-list", { query: debounceQuery }],
+    ["card-list", { query: debounceQuery, level, sort }],
     ({ pageParam }) =>
-      cardsAPI.getAll({ offset: pageParam, fname: debounceQuery, num: 16 }),
+      cardsAPI.getAll({
+        offset: pageParam,
+        fname: debounceQuery,
+        num: 16,
+        level,
+        sort,
+      }),
     {
       getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
       staleTime: Infinity,
