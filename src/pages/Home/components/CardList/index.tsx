@@ -56,7 +56,7 @@ function CardList() {
       <div className="py-4 text-center">
         <Search />
       </div>
-      <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
+      <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-4">
         {isSuccess &&
           data?.pages?.map((page) =>
             page.data?.map(

@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getBadgeColor } from "utils";
 import { useQuery } from "react-query";
 import cardAPI from "api/cards";
@@ -18,6 +18,7 @@ interface CardFromState {
 function SingleCard() {
   const { state } = useLocation();
   const { id } = useParams();
+  const navigate = useNavigate();
   if (!id) throw new Error("No card id");
 
   const { name, description, images, type, archetype }: CardFromState =
@@ -47,6 +48,26 @@ function SingleCard() {
   return (
     <section className="container">
       <div className="my-4">
+        <button
+          className="inline-flex mb-4 px-3 py-1 border rounded-sm hover:shadow"
+          onClick={() => navigate(-1)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M11 17l-5-5m0 0l5-5m-5 5h12"
+            />
+          </svg>
+        </button>
+
         {isLoading && <div>Loading...</div>}
 
         {isSuccess && (
