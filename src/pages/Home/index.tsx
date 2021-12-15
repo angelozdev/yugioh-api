@@ -1,9 +1,9 @@
-import { PokemonList } from "./components";
+import { CardList } from "./components";
 
 function Home() {
   return (
     <section>
-      <PokemonList />
+      <CardList />
     </section>
   );
 }
