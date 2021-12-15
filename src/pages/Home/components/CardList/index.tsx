@@ -1,17 +1,23 @@
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
+import { useSearchParams } from "react-router-dom";
 
 import cardsAPI from "api/cards";
-import { CardPlaceholder } from "..";
-import { useIntersectionObserver } from "hooks";
-import { CardItem } from "../";
+import { CardPlaceholder, CardItem, Search } from "../";
+import { useDebounceState, useIntersectionObserver } from "hooks";
 
 function CardList() {
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [searchParams] = useSearchParams();
+  const [debounceQuery, setQuery] = useDebounceState(
+    searchParams.get("q") || "",
+    500
+  );
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching, isSuccess } =
     useInfiniteQuery(
-      "card-list",
-      ({ pageParam }) => cardsAPI.getAll({ offset: pageParam }),
+      ["card-list", { query: debounceQuery }],
+      ({ pageParam }) =>
+        cardsAPI.getAll({ offset: pageParam, fname: debounceQuery }),
       {
         getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
         staleTime: Infinity,
@@ -27,8 +33,15 @@ function CardList() {
     }
   );
 
+  useEffect(() => {
+    setQuery(searchParams.get("q") || "");
+  }, [searchParams, setQuery]);
+
   return (
     <div className="container py-4">
+      <div className="py-4 text-center">
+        <Search />
+      </div>
       <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
         {isSuccess &&
           data?.pages?.map((page) =>
@@ -48,7 +61,7 @@ function CardList() {
           )}
 
         {isLoading &&
-          Array(10)
+          Array(16)
             .fill(null)
             .map((_, index) => <CardPlaceholder key={index} />)}
       </ul>

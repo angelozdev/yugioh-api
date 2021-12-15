@@ -45,7 +45,7 @@ export interface Card {
 export interface Options {
   num?: number | string;
   offset?: number | string;
-  nextPage?: string;
+  fname?: string;
 }
 
 export interface Response<T> {
