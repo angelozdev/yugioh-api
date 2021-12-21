@@ -31,15 +31,18 @@ interface Meta {
 }
 
 export interface Card {
-  id: number;
-  name: string;
-  type: CardTypes;
-  desc: string;
-  race: string;
   archetype: string;
-  card_sets: CardSet[];
+  atk?: number;
+  attribute?: string;
   card_images: CardImage[];
   card_prices: CardPrice[];
+  card_sets: CardSet[];
+  def?: number;
+  desc: string;
+  id: number;
+  name: string;
+  race: string;
+  type: CardTypes;
 }
 
 export interface Options {
@@ -48,6 +51,7 @@ export interface Options {
   fname?: string;
   level?: number | string;
   sort?: string;
+  order?: "asc" | "desc" | string;
 }
 
 export interface Response<T> {
