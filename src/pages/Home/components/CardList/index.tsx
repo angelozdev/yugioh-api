@@ -1,19 +1,22 @@
-import { Fragment, useEffect, useRef } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import cardsAPI from "api/cards";
 import { CardPlaceholder, CardItem, Search } from "../";
-import { useDebounceState, useIntersectionObserver } from "hooks";
+import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
 
 function CardList() {
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
-  const level = searchParams.get("level") || "";
-  const sort = searchParams.get("sort") || "name";
-  const order = searchParams.get("sortorder") || "desc";
-  const [debounceQuery, setQuery] = useDebounceState(initialQuery, 500);
+  const paramsFromQuery = {
+    level: searchParams.get("level") || "",
+    sort: searchParams.get("sort") || "name",
+    order: searchParams.get("sortorder") || "asc",
+    query: searchParams.get("q") || "",
+  };
+  const [debounceQuery, setQuery] = useDebounceState(
+    paramsFromQuery.query,
+    500
+  );
   const {
     data,
     fetchNextPage,
@@ -22,27 +25,11 @@ function CardList() {
     isFetching,
     isLoading,
     isSuccess,
-  } = useInfiniteQuery(
-    ["card-list", { query: debounceQuery, level, sort, order }],
-    ({ pageParam }) =>
-      cardsAPI.getAll({
-        fname: debounceQuery,
-        level,
-        num: 16,
-        offset: pageParam,
-        order,
-        sort,
-      }),
-    {
-      getNextPageParam: (lastPage) => lastPage.meta.next_page_offset,
-      staleTime: Infinity,
-      retry: false,
-    }
-  );
+  } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
   useIntersectionObserver(
-    buttonRef,
-    { onVisible: () => !isError && fetchNextPage() },
+    divRef,
+    { onVisible: () => !isError && !isFetching && fetchNextPage() },
     {
       rootMargin: "500px",
       threshold: 1,
@@ -90,23 +77,20 @@ function CardList() {
           )}
 
         {isLoading &&
-          Array(16)
+          Array(32)
             .fill(null)
             .map((_, index) => <CardPlaceholder key={index} />)}
       </ul>
 
-      <div className="flex justify-center my-4">
-        <button
-          ref={buttonRef}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-sm disabled:opacity-50 inline-flex items-center shadow-sm"
-          onClick={() => fetchNextPage()}
-          disabled={isFetching || !hasNextPage}
+      <div className="flex justify-center mt-4 mb-32">
+        <div
+          ref={divRef}
+          className="px-4 py-2 text-gray-400 rounded-sm inline-flex items-center shadow-sm"
         >
-          {hasNextPage ? (
-            isFetching ? (
-              <Fragment>
+          {hasNextPage
+            ? isFetching && (
                 <svg
-                  className="animate-spin mr-2 h-5 w-5 text-white"
+                  className="animate-spin mr-2 h-8 w-8 text-blue-600"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -125,15 +109,9 @@ function CardList() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Loading...
-              </Fragment>
-            ) : (
-              "More"
-            )
-          ) : (
-            "No more for now"
-          )}
-        </button>
+              )
+            : "No more for now"}
+        </div>
       </div>
     </div>
   );
