@@ -1,36 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-
-// atk, def, name, type, level, id, new
-const sortBy = [
-  {
-    value: "name",
-    label: "Name",
-  },
-  {
-    value: "atk",
-    label: "Attack",
-  },
-  {
-    value: "def",
-    label: "Defense",
-  },
-  {
-    value: "type",
-    label: "Type",
-  },
-  {
-    value: "level",
-    label: "Level",
-  },
-  {
-    value: "new",
-    label: "New",
-  },
-  {
-    value: "id",
-    label: "ID",
-  },
-];
+import { sortBy } from "./fixtures";
 
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,7 +7,7 @@ function Search() {
     level: searchParams.get("level") || "",
     q: searchParams.get("q") || "",
     sort: searchParams.get("sort") || "name",
-    sortorder: searchParams.get("sortorder") || "desc",
+    sortorder: searchParams.get("sortorder") || "asc",
   };
 
   const handleFilters = (name: string, value: string) => {
@@ -48,7 +17,7 @@ function Search() {
   return (
     <div className="inline-flex gap-2 overflow-x-scroll w-full no-scrollbar">
       <input
-        className="border py-2 px-4 focus:shadow-lg max-w-full cursor-pointer rounded-none"
+        className="border py-2 px-4 focus:shadow-lg max-w-full cursor-text rounded-none"
         type="search"
         placeholder="Search card..."
         onChange={({ target }) => handleFilters("q", target.value)}
@@ -90,7 +59,7 @@ function Search() {
         onClick={() =>
           handleFilters(
             "sortorder",
-            params.sortorder === "desc" ? "asc" : "desc"
+            params.sortorder === "asc" ? "desc" : "asc"
           )
         }
       />
