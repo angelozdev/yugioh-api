@@ -12,6 +12,7 @@ function CardList() {
   const initialQuery = searchParams.get("q") || "";
   const level = searchParams.get("level") || "";
   const sort = searchParams.get("sort") || "name";
+  const order = searchParams.get("sortorder") || "desc";
   const [debounceQuery, setQuery] = useDebounceState(initialQuery, 500);
   const {
     data,
@@ -22,13 +23,14 @@ function CardList() {
     isLoading,
     isSuccess,
   } = useInfiniteQuery(
-    ["card-list", { query: debounceQuery, level, sort }],
+    ["card-list", { query: debounceQuery, level, sort, order }],
     ({ pageParam }) =>
       cardsAPI.getAll({
-        offset: pageParam,
         fname: debounceQuery,
-        num: 16,
         level,
+        num: 16,
+        offset: pageParam,
+        order,
         sort,
       }),
     {
@@ -60,15 +62,28 @@ function CardList() {
         {isSuccess &&
           data?.pages?.map((page) =>
             page.data?.map(
-              ({ id, name, card_images, desc, type, archetype }) => (
+              ({
+                archetype,
+                atk,
+                attribute,
+                card_images,
+                def,
+                desc,
+                id,
+                name,
+                type,
+              }) => (
                 <CardItem
+                  archetype={archetype}
+                  attack={atk}
+                  attribute={attribute}
+                  defense={def}
                   description={desc}
                   id={id}
                   images={card_images}
                   key={id}
                   name={name}
                   type={type}
-                  archetype={archetype}
                 />
               )
             )

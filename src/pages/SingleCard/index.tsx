@@ -31,15 +31,15 @@ function SingleCard() {
   } = useQuery<Card>(["card", { id }], () => cardAPI.getById(id), {
     initialData: state?.card
       ? {
-          name,
-          desc: description,
-          card_images: images,
-          id: +id,
-          type,
           archetype,
+          card_images: images,
           card_prices: [],
           card_sets: [],
+          desc: description,
+          id: +id,
+          name,
           race: "",
+          type,
         }
       : undefined,
     staleTime: Infinity,

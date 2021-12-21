@@ -6,10 +6,26 @@ const axios = Axios.create({
 });
 
 export async function getAll(options?: Options): Promise<Response<Card[]>> {
-  const { num = 10, offset = 0, fname = "", level = "", sort } = options || {};
+  const {
+    num = 10,
+    offset = 0,
+    fname = "",
+    level = "",
+    sort,
+    order = "desc",
+  } = options || {};
   const _level = level ? (level === "no-level" ? "" : level) : undefined;
   const { data } = await axios.get<Response<Card[]>>("/", {
-    params: { num, offset, taple: "yes", fname, level: _level, sort },
+    params: {
+      desc: fname,
+      fname,
+      level: _level,
+      num,
+      offset,
+      sort,
+      sortorder: order,
+      taple: "yes",
+    },
   });
 
   return data;

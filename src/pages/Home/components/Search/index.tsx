@@ -34,31 +34,31 @@ const sortBy = [
 
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const params = {
+    level: searchParams.get("level") || "",
+    q: searchParams.get("q") || "",
+    sort: searchParams.get("sort") || "name",
+    sortorder: searchParams.get("sortorder") || "desc",
+  };
 
   const handleFilters = (name: string, value: string) => {
-    const params = {
-      q: searchParams.get("q") || "",
-      level: searchParams.get("level") || "",
-      sort: searchParams.get("sort") || "name",
-    };
-
     setSearchParams({ ...params, [name]: value });
   };
 
   return (
     <div className="inline-flex gap-2 overflow-x-scroll w-full no-scrollbar">
       <input
-        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full"
+        className="border py-2 px-4 focus:shadow-lg max-w-full cursor-pointer rounded-none"
         type="search"
         placeholder="Search card..."
         onChange={({ target }) => handleFilters("q", target.value)}
-        value={searchParams.get("q") || ""}
+        value={params["q"]}
       />
 
       <select
-        value={searchParams.get("level") || ""}
+        value={params.level}
         onChange={({ target }) => handleFilters("level", target.value)}
-        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full bg-white"
+        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full bg-white cursor-pointer"
       >
         <option value="">All levels</option>
         <option value="no-level">No level</option>
@@ -72,9 +72,9 @@ function Search() {
       </select>
 
       <select
-        value={searchParams.get("sort") || "name"}
+        value={params["sort"]}
         onChange={({ target }) => handleFilters("sort", target.value)}
-        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full bg-white"
+        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full bg-white cursor-pointer"
       >
         {sortBy.map(({ label, value }) => (
           <option value={value} key={value}>
@@ -82,6 +82,18 @@ function Search() {
           </option>
         ))}
       </select>
+
+      <input
+        className="border py-2 px-4 uppercase cursor-pointer rounded-none"
+        type="button"
+        value={params["sortorder"]}
+        onClick={() =>
+          handleFilters(
+            "sortorder",
+            params.sortorder === "desc" ? "asc" : "desc"
+          )
+        }
+      />
     </div>
   );
 }

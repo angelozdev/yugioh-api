@@ -4,16 +4,28 @@ import { Card } from "api/resources";
 import { getBadgeColor } from "utils";
 
 interface Props {
+  archetype: Card["archetype"];
+  attack?: Card["atk"];
+  attribute?: Card["attribute"];
+  defense?: Card["def"];
   description: Card["desc"];
   id: Card["id"];
   images: Card["card_images"];
   name: Card["name"];
   type: Card["type"];
-  archetype: Card["archetype"];
 }
 
 const CardItem = memo(
-  ({ name, description, images, id, type, archetype }: Props) => {
+  ({
+    archetype,
+    attack,
+    defense,
+    description,
+    id,
+    images,
+    name,
+    type,
+  }: Props) => {
     const card = { name, description, images, id, type, archetype };
 
     return (
@@ -23,7 +35,7 @@ const CardItem = memo(
           state={{ card }}
           to={`/cards/${id}`}
         >
-          <figure className="basis-32">
+          <figure className="basis-36">
             <img loading="lazy" src={images[0].image_url_small} alt={name} />
           </figure>
 
@@ -37,6 +49,20 @@ const CardItem = memo(
               {type}
             </span>
             <p className="line-clamp-3">{description}</p>
+
+            {typeof attack !== "undefined" && typeof defense !== "undefined" && (
+              <div className="flex gap-2 border-t py-1 mt-2">
+                <p className="text-red-900">
+                  <span>ATK:</span>{" "}
+                  <span className="font-semibold">{attack / 1000}K</span>
+                </p>
+
+                <p className="text-cyan-900">
+                  <span>DEF:</span>{" "}
+                  <span className="font-semibold">{defense / 1000}K</span>
+                </p>
+              </div>
+            )}
           </div>
         </Link>
       </li>
