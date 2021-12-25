@@ -1,4 +1,6 @@
-const FIREBASE_CONFIG = process.env.REACT_APP_FIREBASE_CONFIG || "{}";
+const FIREBASE_CONFIG = process.env.REACT_APP_FIREBASE_CONFIG;
+
+if (!FIREBASE_CONFIG) throw new Error("Missing REACT_APP_FIREBASE_CONFIG");
 
 const config = {
   firebase: {
