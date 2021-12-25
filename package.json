@@ -5,6 +5,7 @@
   "dependencies": {
     "@tailwindcss/line-clamp": "^0.3.0",
     "axios": "^0.24.0",
+    "firebase": "^9.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.34.2",
@@ -40,6 +41,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@types/firebase": "^3.2.1",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.12",
     "@types/react": "^17.0.37",

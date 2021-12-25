@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "react-query";
 
 // utils
-import cardsAPI from "api/cards";
+import cardsServices from "services/cards";
 
 interface Options {
   query?: string;
@@ -16,7 +16,7 @@ function useCardList({ query, level, sort, order }: Options) {
   const cardQuery = useInfiniteQuery(
     ["card-list", { query, level, sort, order }],
     ({ pageParam }) =>
-      cardsAPI.getAll({
+      cardsServices.getAll({
         fname: query,
         level,
         num: CARDS_PER_PAGE,

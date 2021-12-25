@@ -1,4 +1,4 @@
-import { Card, CardTypes } from "api/resources";
+import { Card, CardTypes } from "services/resources";
 
 export const getBadgeColor = (type: Card["type"]) => {
   const colors: Record<CardTypes, string> = {
