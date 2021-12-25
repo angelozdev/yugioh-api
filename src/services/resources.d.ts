@@ -39,7 +39,7 @@ export interface Card {
   card_sets: CardSet[];
   def?: number;
   desc: string;
-  id: number;
+  id: number | string;
   name: string;
   race: string;
   type: CardTypes;
@@ -70,3 +70,10 @@ export type CardTypes =
   | "Pendulum Effect Monster"
   | "Link Monster"
   | "Synchro Tuner Monster";
+
+export interface Deck {
+  cards: Card[];
+  description: string;
+  id: string;
+  name: string;
+}

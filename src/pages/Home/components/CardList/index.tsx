@@ -1,8 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useMutation } from "react-query";
 import { useSearchParams } from "react-router-dom";
 
+// components
 import { CardPlaceholder, CardItem, Search } from "../";
+
+// utils
 import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
+import decksService from "services/decks";
 
 function CardList() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -27,9 +32,17 @@ function CardList() {
     isSuccess,
   } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
+  const addCardMutation = useMutation(
+    ({ deckId, card }: { deckId: string; card: any }) =>
+      decksService.addCard(deckId, card)
+  );
+
   useIntersectionObserver(
     divRef,
-    { onVisible: () => !isError && !isFetching && fetchNextPage() },
+    {
+      onVisible: () =>
+        !isError && !isFetching && hasNextPage && fetchNextPage(),
+    },
     {
       rootMargin: "500px",
       threshold: 1,
@@ -40,12 +53,23 @@ function CardList() {
     setQuery(searchParams.get("q") || "");
   }, [searchParams, setQuery]);
 
+  const handleAddCard = useCallback(
+    async (card: any) => {
+      Object.keys(card).forEach((key) => {
+        if (typeof card[key] === "undefined") delete card?.[key];
+      });
+
+      addCardMutation.mutate({ deckId: "fUCAw3WlzoN54yWQMK7M", card });
+    },
+    [addCardMutation]
+  );
+
   return (
     <div className="container py-4">
       <div className="py-4 text-center">
         <Search />
       </div>
-      <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-4">
+      <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
         {isSuccess &&
           data?.pages?.map((page) =>
             page.data?.map(
@@ -56,23 +80,33 @@ function CardList() {
                 card_images,
                 def,
                 desc,
-                id,
                 name,
                 type,
-              }) => (
-                <CardItem
-                  archetype={archetype}
-                  attack={atk}
-                  attribute={attribute}
-                  defense={def}
-                  description={desc}
-                  id={id}
-                  images={card_images}
-                  key={id}
-                  name={name}
-                  type={type}
-                />
-              )
+              }) =>
+                card_images.map(({ id }, index) => (
+                  <CardItem
+                    archetype={archetype}
+                    attack={atk}
+                    attribute={attribute}
+                    defense={def}
+                    description={desc}
+                    id={id}
+                    imageIndex={index}
+                    images={card_images}
+                    key={id}
+                    name={name}
+                    onAddCard={handleAddCard}
+                    type={type}
+                    isLoading={
+                      addCardMutation.isLoading &&
+                      addCardMutation.variables?.card.id === id
+                    }
+                    showSuccessIcon={
+                      addCardMutation.isSuccess &&
+                      addCardMutation.variables?.card.id === id
+                    }
+                  />
+                ))
             )
           )}
 

@@ -1,10 +1,12 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getBadgeColor } from "utils";
 import { useQuery } from "react-query";
-import cardAPI from "api/cards";
+
+// utils
+import { getBadgeColor } from "utils";
+import cardsServices from "services/cards";
 
 // types
-import type { Card } from "api/resources";
+import type { Card } from "services/resources";
 
 interface CardFromState {
   name: Card["name"];
@@ -13,6 +15,7 @@ interface CardFromState {
   id: Card["id"];
   type: Card["type"];
   archetype: Card["archetype"];
+  imageIndex: number;
 }
 
 function SingleCard() {
@@ -21,14 +24,20 @@ function SingleCard() {
   const navigate = useNavigate();
   if (!id) throw new Error("No card id");
 
-  const { name, description, images, type, archetype }: CardFromState =
-    state?.card || {};
+  const {
+    name,
+    description,
+    images,
+    type,
+    archetype,
+    imageIndex,
+  }: CardFromState = state?.card || {};
 
   const {
     data: card,
     isLoading,
     isSuccess,
-  } = useQuery<Card>(["card", { id }], () => cardAPI.getById(id), {
+  } = useQuery<Card>(["card", { id }], () => cardsServices.getById(id), {
     initialData: state?.card
       ? {
           archetype,
@@ -76,7 +85,7 @@ function SingleCard() {
               <img
                 className="object-cover mx-auto"
                 width={240}
-                src={card?.card_images[0].image_url}
+                src={card?.card_images[imageIndex || 0].image_url}
                 alt={name}
               />
             </figure>

@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { Fragment } from "react";
-import { Home, SingleCard } from "pages";
+import { Home, SingleCard, SingleDeck } from "pages";
 import { Header } from "components";
 import { useIsFetching } from "react-query";
 
@@ -17,6 +17,16 @@ function App() {
         <Route path="/cards">
           <Route path="" element={<Navigate to="/" />} />
           <Route path=":id" element={<SingleCard />} />
+        </Route>
+      </Routes>
+
+      <Routes>
+        <Route path="/decks">
+          <Route
+            path=""
+            element={<Navigate to="/decks/fUCAw3WlzoN54yWQMK7M" />}
+          />
+          <Route path=":id" element={<SingleDeck />} />
         </Route>
       </Routes>
 
