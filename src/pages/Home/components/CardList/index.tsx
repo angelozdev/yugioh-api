@@ -8,8 +8,10 @@ import { Check, Heart, Spin } from "components/icons";
 // utils
 import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
 import { useAddCardMutation } from "./hooks";
+import { useDeckContext } from "contexts/deck";
 
 function CardList() {
+  const { ids } = useDeckContext();
   const divRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
   const paramsFromQuery = {
@@ -85,8 +87,8 @@ function CardList() {
                     attribute={attribute}
                     defense={def}
                     description={desc}
-                    disabled={wasAdded}
-                    icon={wasAdded ? Check : Heart}
+                    disabled={wasAdded || ids.has(id)}
+                    icon={wasAdded || ids.has(id) ? Check : Heart}
                     id={id}
                     imageIndex={index}
                     images={card_images}
