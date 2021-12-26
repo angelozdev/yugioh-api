@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 
 // utils
 import decksService from "services/decks";
+import { useDeckContext } from "contexts/deck";
 
 // types
 import type { Card } from "services/resources";
 
-function useDeleteCardMutation(deckId: string) {
+function useDeleteCardMutation() {
+  const { deckId } = useDeckContext();
   const deleteCardMutation = useMutation(
     (cardId: string) => decksService.deleteCard(deckId, cardId),
     {

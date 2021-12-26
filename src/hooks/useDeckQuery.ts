@@ -1,13 +1,19 @@
-import { useQuery } from "react-query";
+import { useQuery, UseQueryOptions } from "react-query";
 
 // utils
 import decksService from "services/decks";
 
-function useDeckQuery(deckId: string) {
+// types
+import type { Deck } from "services/resources";
+
+function useDeckQuery(
+  deckId: string,
+  options?: UseQueryOptions<Deck | null, unknown, Deck, [string, object]>
+) {
   const deckQuery = useQuery(
     ["deck", { id: deckId }],
     () => decksService.getById(deckId),
-    { staleTime: Infinity }
+    { staleTime: Infinity, ...options }
   );
 
   return deckQuery;
