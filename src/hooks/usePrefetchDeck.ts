@@ -1,8 +1,10 @@
-import db from "firebase-client/db";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 import { useQueryClient } from "react-query";
+
+// utils
 import decksService from "services/decks";
+import db from "firebase-client/db";
 
 function usePrefetchDeck(deckId: string) {
   const queryClient = useQueryClient();
@@ -18,6 +20,7 @@ function usePrefetchDeck(deckId: string) {
     });
 
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
