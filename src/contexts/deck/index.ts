@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 interface IDeckContext {
   deckId: string;
   setDeckId: React.Dispatch<React.SetStateAction<string>>;
+  ids: Set<number | string>;
 }
 
 export const DeckContext = createContext<IDeckContext | undefined>(undefined);
