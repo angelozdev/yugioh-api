@@ -1,22 +1,32 @@
 import { StrictMode } from "react";
 import { render } from "react-dom";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { QueryClientProvider, QueryClient } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-
 import { BrowserRouter } from "react-router-dom";
+
+// Providers
+import DeckProvider from "./contexts/deck/Provider";
+
+// components
+import App from "./App";
+
+// utils
+import queryClient from "react-query-client";
+
+// styles
 import "./index.css";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const queryClient = new QueryClient({});
 const $root = document.getElementById("root");
 
 render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <DeckProvider>
+          <App />
+        </DeckProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </BrowserRouter>

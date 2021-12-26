@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 // utils
 import { getBadgeColor } from "utils";
+import { useDeckContext } from "contexts/deck";
 
 // components
 import { Spin } from "components/icons";
@@ -44,6 +45,7 @@ const CardItem = memo((props: Props) => {
     onClickIcon,
     disabled = false,
   } = props;
+  const { deckId } = useDeckContext();
   const card = { name, description, images, id, type, archetype, imageIndex };
 
   return (
@@ -72,7 +74,7 @@ const CardItem = memo((props: Props) => {
               <span>{name}</span>
             </h3>
 
-            {Icon && (
+            {Icon && deckId && (
               <button
                 className="disabled:opacity-50"
                 disabled={isLoading || disabled}

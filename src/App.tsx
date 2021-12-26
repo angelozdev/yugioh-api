@@ -1,13 +1,21 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { Fragment } from "react";
-import { Home, SingleCard, SingleDeck } from "pages";
-import { Header } from "components";
 import { useIsFetching } from "react-query";
-import { usePrefetchDeck } from "hooks";
 import { ToastContainer } from "react-toastify";
 
+// pages
+import { Decks, Home, SingleCard, SingleDeck } from "pages";
+
+// components
+import { Header } from "components";
+
+// utils
+import { usePrefetchDeck } from "hooks";
+import { useDeckContext } from "contexts/deck";
+
 function App() {
-  usePrefetchDeck("fUCAw3WlzoN54yWQMK7M");
+  usePrefetchDeck();
+  const { deckId } = useDeckContext();
   const isFetching = useIsFetching();
   return (
     <Fragment>
@@ -27,7 +35,7 @@ function App() {
         <Route path="/decks">
           <Route
             path=""
-            element={<Navigate to="/decks/fUCAw3WlzoN54yWQMK7M" />}
+            element={deckId ? <Navigate to={`/decks/${deckId}`} /> : <Decks />}
           />
           <Route path=":id" element={<SingleDeck />} />
         </Route>

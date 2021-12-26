@@ -32,7 +32,7 @@ function CardList() {
     isSuccess,
   } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
-  const addCardMutation = useAddCardMutation("fUCAw3WlzoN54yWQMK7M");
+  const addCardMutation = useAddCardMutation();
 
   useIntersectionObserver(
     divRef,

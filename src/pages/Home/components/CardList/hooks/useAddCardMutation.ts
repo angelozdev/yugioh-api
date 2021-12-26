@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 
 // utils
 import decksService from "services/decks";
+import { useDeckContext } from "contexts/deck";
 
 // types
 import type { Card } from "services/resources";
 
-function useAddCardMutation(deckId: string) {
+function useAddCardMutation() {
+  const { deckId } = useDeckContext();
   const addCardMutation = useMutation(
     ({ deckId, card }: { deckId: string; card: any }) =>
       decksService.addCard(deckId, card),

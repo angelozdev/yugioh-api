@@ -5,11 +5,14 @@ import { useQueryClient } from "react-query";
 // utils
 import decksService from "services/decks";
 import db from "firebase-client/db";
+import { useDeckContext } from "contexts/deck";
 
-function usePrefetchDeck(deckId: string) {
+function usePrefetchDeck() {
+  const { deckId } = useDeckContext();
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    if (!deckId) return;
     const deckRef = doc(db, "decks", deckId);
     const cardsRef = collection(deckRef, "cards");
 
@@ -21,7 +24,7 @@ function usePrefetchDeck(deckId: string) {
 
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [deckId]);
 }
 
 export default usePrefetchDeck;

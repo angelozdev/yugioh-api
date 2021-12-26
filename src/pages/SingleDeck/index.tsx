@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // components
 import { CardItem, CardPlaceholder } from "pages/Home/components";
@@ -8,13 +8,15 @@ import { Check, Trash } from "components/icons";
 // utils
 import { useDeleteCardMutation } from "./hooks";
 import { useDeckQuery } from "hooks";
+import { useDeckContext } from "contexts/deck";
 
 function SingleDeck() {
-  const { id: deckId } = useParams();
-  if (!deckId) throw new Error("No id");
+  const navigate = useNavigate();
+  const { deckId } = useDeckContext();
+  if (!deckId) navigate("/decks");
 
   const { isLoading, isSuccess, data } = useDeckQuery(deckId);
-  const deleteCardMutation = useDeleteCardMutation(deckId);
+  const deleteCardMutation = useDeleteCardMutation();
 
   return (
     <section className="container my-4">

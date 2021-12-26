@@ -1,14 +1,15 @@
-import { useDeckQuery } from "hooks";
+import { Logout } from "components/icons";
+import { useDeckContext } from "contexts/deck";
 import { NavLink } from "react-router-dom";
 import { routes } from "./fixtures";
 
 function Header() {
-  const deckQuery = useDeckQuery("fUCAw3WlzoN54yWQMK7M");
+  const { deckId, setDeckId } = useDeckContext();
 
   return (
     <header className="shadow-md sticky top-0 bg-white z-50">
       <nav className="container">
-        <ul className="flex">
+        <ul className="flex items-center">
           {routes.map(({ label, path }) => (
             <li key={path}>
               <NavLink
@@ -20,12 +21,21 @@ function Header() {
                 }}
                 to={path}
               >
-                {typeof label === "function"
-                  ? label(deckQuery.data?.cards.length)
-                  : label}
+                {label}
               </NavLink>
             </li>
           ))}
+
+          {deckId && (
+            <li className="ml-auto">
+              <button
+                onClick={() => setDeckId("")}
+                className="p-2 inline-block"
+              >
+                <Logout />
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
