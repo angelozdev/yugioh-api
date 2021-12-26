@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
+import "react-toastify/dist/ReactToastify.min.css";
 
 const queryClient = new QueryClient({});
 const $root = document.getElementById("root");

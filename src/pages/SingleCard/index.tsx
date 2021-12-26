@@ -5,6 +5,9 @@ import { useQuery } from "react-query";
 import { getBadgeColor } from "utils";
 import cardsServices from "services/cards";
 
+//components
+import { ArrowLeft } from "components/icons/";
+
 // types
 import type { Card } from "services/resources";
 
@@ -61,20 +64,7 @@ function SingleCard() {
           className="inline-flex mb-4 px-3 py-1 border rounded-sm hover:shadow"
           onClick={() => navigate(-1)}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 17l-5-5m0 0l5-5m-5 5h12"
-            />
-          </svg>
+          <ArrowLeft />
         </button>
 
         {isLoading && <div>Loading...</div>}

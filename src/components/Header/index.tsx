@@ -1,7 +1,10 @@
+import { useDeckQuery } from "hooks";
 import { NavLink } from "react-router-dom";
 import { routes } from "./fixtures";
 
 function Header() {
+  const deckQuery = useDeckQuery("fUCAw3WlzoN54yWQMK7M");
+
   return (
     <header className="shadow-md sticky top-0 bg-white z-50">
       <nav className="container">
@@ -17,7 +20,9 @@ function Header() {
                 }}
                 to={path}
               >
-                {label}
+                {typeof label === "function"
+                  ? label(deckQuery.data?.cards.length)
+                  : label}
               </NavLink>
             </li>
           ))}

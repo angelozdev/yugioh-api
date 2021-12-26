@@ -40,6 +40,7 @@ export interface Card {
   def?: number;
   desc: string;
   id: number | string;
+  level?: number;
   name: string;
   race: string;
   type: CardTypes;
