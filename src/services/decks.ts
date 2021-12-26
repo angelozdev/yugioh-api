@@ -8,7 +8,6 @@ import {
   orderBy,
   query,
   setDoc,
-  where,
 } from "firebase/firestore";
 
 // types
@@ -60,7 +59,13 @@ export async function addCard(deckId: string, card: Card) {
 export async function deleteCard(deckId: string, cardId: string) {
   const deckRef = doc(db, "decks", deckId);
   const cardRef = doc(deckRef, "cards", cardId);
+  const card = await getDoc(cardRef);
   await deleteDoc(cardRef);
+
+  return {
+    id: card.id,
+    ...card.data(),
+  } as Card;
 }
 
 const decksService = { getAll, getById, addCard, deleteCard };

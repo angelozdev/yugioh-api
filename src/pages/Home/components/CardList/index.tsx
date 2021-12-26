@@ -7,7 +7,7 @@ import { Check, Heart, Spin } from "components/icons";
 
 // utils
 import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
-import { useMutationAddCard } from "./hooks";
+import { useAddCardMutation } from "./hooks";
 
 function CardList() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,7 @@ function CardList() {
     isSuccess,
   } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
-  const addCardMutation = useMutationAddCard("fUCAw3WlzoN54yWQMK7M");
+  const addCardMutation = useAddCardMutation("fUCAw3WlzoN54yWQMK7M");
 
   useIntersectionObserver(
     divRef,

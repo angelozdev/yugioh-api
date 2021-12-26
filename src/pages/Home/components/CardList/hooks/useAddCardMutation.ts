@@ -1,12 +1,21 @@
 import { useCallback } from "react";
 import { useMutation } from "react-query";
-import decksService from "services/decks";
-import { Card } from "services/resources";
+import { toast } from "react-toastify";
 
-function useMutationAddCard(deckId: string) {
+// utils
+import decksService from "services/decks";
+
+// types
+import type { Card } from "services/resources";
+
+function useAddCardMutation(deckId: string) {
   const addCardMutation = useMutation(
     ({ deckId, card }: { deckId: string; card: any }) =>
-      decksService.addCard(deckId, card)
+      decksService.addCard(deckId, card),
+    {
+      onSuccess: async ({ name }) =>
+        toast(`"${name}" was added to your deck.`, { type: "success" }),
+    }
   );
 
   const onAddCard = useCallback(
@@ -23,4 +32,4 @@ function useMutationAddCard(deckId: string) {
   return { ...addCardMutation, onAddCard };
 }
 
-export default useMutationAddCard;
+export default useAddCardMutation;

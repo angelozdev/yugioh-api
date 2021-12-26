@@ -5,8 +5,9 @@ import { useParams } from "react-router-dom";
 import { CardItem, CardPlaceholder } from "pages/Home/components";
 import { Check, Trash } from "components/icons";
 
-// types
-import { useDeleteCardMutation, useDeckQuery } from "./hooks";
+// utils
+import { useDeleteCardMutation } from "./hooks";
+import { useDeckQuery } from "hooks";
 
 function SingleDeck() {
   const { id: deckId } = useParams();

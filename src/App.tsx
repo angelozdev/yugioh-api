@@ -3,8 +3,11 @@ import { Fragment } from "react";
 import { Home, SingleCard, SingleDeck } from "pages";
 import { Header } from "components";
 import { useIsFetching } from "react-query";
+import { usePrefetchDeck } from "hooks";
+import { ToastContainer } from "react-toastify";
 
 function App() {
+  usePrefetchDeck("fUCAw3WlzoN54yWQMK7M");
   const isFetching = useIsFetching();
   return (
     <Fragment>
@@ -35,6 +38,7 @@ function App() {
           <span className="inline-block animate-ping w-4 h-4 bg-cyan-900 rounded-full" />
         </p>
       )}
+      <ToastContainer position="bottom-right" />
     </Fragment>
   );
 }

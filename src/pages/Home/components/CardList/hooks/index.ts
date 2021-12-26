@@ -1,1 +1,1 @@
-export { default as useMutationAddCard } from "./useMutationAddCard";
+export { default as useAddCardMutation } from "./useAddCardMutation";
