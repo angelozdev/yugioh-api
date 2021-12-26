@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useMutation } from "react-query";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // components
 import { CardPlaceholder, CardItem, Search } from "../";
+import { Check, Heart, Spin } from "components/icons";
 
 // utils
 import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
-import decksService from "services/decks";
+import { useMutationAddCard } from "./hooks";
 
 function CardList() {
   const divRef = useRef<HTMLDivElement>(null);
@@ -32,10 +32,7 @@ function CardList() {
     isSuccess,
   } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
-  const addCardMutation = useMutation(
-    ({ deckId, card }: { deckId: string; card: any }) =>
-      decksService.addCard(deckId, card)
-  );
+  const addCardMutation = useMutationAddCard("fUCAw3WlzoN54yWQMK7M");
 
   useIntersectionObserver(
     divRef,
@@ -53,17 +50,6 @@ function CardList() {
     setQuery(searchParams.get("q") || "");
   }, [searchParams, setQuery]);
 
-  const handleAddCard = useCallback(
-    async (card: any) => {
-      Object.keys(card).forEach((key) => {
-        if (typeof card[key] === "undefined") delete card?.[key];
-      });
-
-      addCardMutation.mutate({ deckId: "fUCAw3WlzoN54yWQMK7M", card });
-    },
-    [addCardMutation]
-  );
-
   return (
     <div className="container py-4">
       <div className="py-4 text-center">
@@ -72,8 +58,8 @@ function CardList() {
       <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
         {isSuccess &&
           data?.pages?.map((page) =>
-            page.data?.map(
-              ({
+            page.data?.map((card) => {
+              const {
                 archetype,
                 atk,
                 attribute,
@@ -82,32 +68,37 @@ function CardList() {
                 desc,
                 name,
                 type,
-              }) =>
-                card_images.map(({ id }, index) => (
+              } = card;
+              return card_images.map(({ id }, index) => {
+                const wasAdded =
+                  addCardMutation.isSuccess &&
+                  addCardMutation.variables?.card.id === id;
+
+                const isLoading =
+                  addCardMutation.isLoading &&
+                  addCardMutation.variables?.card.id === id;
+
+                return (
                   <CardItem
                     archetype={archetype}
                     attack={atk}
                     attribute={attribute}
                     defense={def}
                     description={desc}
+                    disabled={wasAdded}
+                    icon={wasAdded ? Check : Heart}
                     id={id}
                     imageIndex={index}
                     images={card_images}
+                    isLoading={isLoading}
                     key={id}
                     name={name}
-                    onAddCard={handleAddCard}
+                    onClickIcon={addCardMutation.onAddCard}
                     type={type}
-                    isLoading={
-                      addCardMutation.isLoading &&
-                      addCardMutation.variables?.card.id === id
-                    }
-                    showSuccessIcon={
-                      addCardMutation.isSuccess &&
-                      addCardMutation.variables?.card.id === id
-                    }
                   />
-                ))
-            )
+                );
+              });
+            })
           )}
 
         {isLoading &&
@@ -121,30 +112,7 @@ function CardList() {
           ref={divRef}
           className="px-4 py-2 text-gray-400 rounded-sm inline-flex items-center shadow-sm"
         >
-          {hasNextPage
-            ? isFetching && (
-                <svg
-                  className="animate-spin mr-2 h-8 w-8 text-blue-600"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx={12}
-                    cy={12}
-                    r={10}
-                    stroke="currentColor"
-                    strokeWidth={4}
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-              )
-            : "No more for now"}
+          {hasNextPage ? isFetching && <Spin /> : "No more for now"}
         </div>
       </div>
     </div>
