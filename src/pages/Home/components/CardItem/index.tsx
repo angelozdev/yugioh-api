@@ -23,6 +23,7 @@ interface Props {
   imageIndex: number;
   images: Card["card_images"];
   isLoading?: boolean;
+  level?: Card["level"];
   name: Card["name"];
   onClickIcon?: (card: Partial<Card>) => void;
   type: Card["type"];
@@ -35,18 +36,28 @@ const CardItem = memo((props: Props) => {
     attribute,
     defense,
     description,
+    disabled = false,
+    icon: Icon,
     id,
     imageIndex = 0,
     images,
     isLoading = false,
+    level,
     name,
-    type,
-    icon: Icon,
     onClickIcon,
-    disabled = false,
+    type,
   } = props;
   const { deckId } = useDeckContext();
-  const card = { name, description, images, id, type, archetype, imageIndex };
+  const card = {
+    name,
+    description,
+    images,
+    id,
+    type,
+    archetype,
+    imageIndex,
+    level,
+  };
 
   return (
     <li className="border rounded-md shadow-md hover:shadow-lg relative overflow-hidden">
@@ -87,6 +98,7 @@ const CardItem = memo((props: Props) => {
                     def: defense,
                     desc: description,
                     id,
+                    level,
                     name,
                     type,
                   })

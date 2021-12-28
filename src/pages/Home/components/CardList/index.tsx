@@ -70,6 +70,7 @@ function CardList() {
                 desc,
                 name,
                 type,
+                level,
               } = card;
               return card_images.map(({ id }, index) => {
                 const wasAdded =
@@ -94,6 +95,7 @@ function CardList() {
                     images={card_images}
                     isLoading={isLoading}
                     key={id}
+                    level={level}
                     name={name}
                     onClickIcon={addCardMutation.onAddCard}
                     type={type}

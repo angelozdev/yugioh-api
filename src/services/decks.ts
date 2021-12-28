@@ -29,7 +29,7 @@ export async function getById(id: string): Promise<Deck | null> {
   const deckRef = doc(db, "decks", id);
   const deck = await getDoc(deckRef);
   const cardsRef = collection(deckRef, "cards");
-  const q = query(cardsRef, orderBy("atk", "desc"), orderBy("def", "desc"));
+  const q = query(cardsRef, orderBy("name", "asc"));
   const cardsQuerySnapshot = await getDocs(q);
 
   const cards = cardsQuerySnapshot.docs.map((doc) => ({
