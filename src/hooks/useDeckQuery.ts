@@ -13,7 +13,7 @@ function useDeckQuery(
   const deckQuery = useQuery(
     ["deck", { id: deckId }],
     () => decksService.getById(deckId),
-    { staleTime: Infinity, ...options }
+    { staleTime: Infinity, enabled: !!deckId, ...options }
   );
 
   return deckQuery;
