@@ -31,8 +31,8 @@ function Search() {
       >
         <option value="">All levels</option>
         <option value="no-level">No level</option>
-        {Array(10)
-          .fill(undefined)
+        {Array(12)
+          .fill(0)
           .map((_, i) => (
             <option value={i + 1} key={i}>
               {i + 1} level
