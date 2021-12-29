@@ -53,6 +53,7 @@ export interface Options {
   level?: number | string;
   sort?: string;
   order?: "asc" | "desc" | string;
+  attribute?: string;
 }
 
 export interface Response<T> {

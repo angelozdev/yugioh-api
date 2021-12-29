@@ -9,6 +9,7 @@ import { Check, Trash } from "components/icons";
 import { useDeleteCardMutation, useFilteredCards } from "./hooks";
 import { useDeckQuery } from "hooks";
 import { useDeckContext } from "contexts/deck";
+import { CARDS_PER_PAGE } from "hooks/useCardList";
 
 function SingleDeck() {
   const { deckId } = useDeckContext();
@@ -25,7 +26,7 @@ function SingleDeck() {
 
       {isLoading && (
         <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
-          {Array(32)
+          {Array(CARDS_PER_PAGE)
             .fill({})
             .map((_, index) => (
               <CardPlaceholder key={index} />

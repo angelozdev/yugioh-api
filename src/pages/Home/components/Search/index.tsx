@@ -1,9 +1,10 @@
 import { useSearchParams } from "react-router-dom";
-import { sortBy } from "./fixtures";
+import { sortBy, attributes } from "./fixtures";
 
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const params = {
+    attribute: searchParams.get("attribute") || "",
     level: searchParams.get("level") || "",
     q: searchParams.get("q") || "",
     sort: searchParams.get("sort") || "name",
@@ -23,6 +24,18 @@ function Search() {
         onChange={({ target }) => handleFilters("q", target.value)}
         value={params["q"]}
       />
+
+      <select
+        value={params.attribute}
+        onChange={({ target }) => handleFilters("attribute", target.value)}
+        className="border py-2 px-4 focus:shadow-lg rounded-sm max-w-full bg-white cursor-pointer"
+      >
+        {attributes.map(({ label, value }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
 
       <select
         value={params.level}

@@ -14,10 +14,11 @@ function useFilteredCards(initialCards: Card[] = []): Card[] {
   const [searchParams] = useSearchParams();
   const paramsFromQuery = useMemo(
     () => ({
+      attribute: searchParams.get("attribute") || "",
       level: searchParams.get("level") || "",
-      sort: searchParams.get("sort") || "name",
       order: searchParams.get("sortorder") || "asc",
       query: searchParams.get("q") || "",
+      sort: searchParams.get("sort") || "name",
     }),
     [searchParams]
   );
@@ -98,17 +99,24 @@ function useFilteredCards(initialCards: Card[] = []): Card[] {
     [paramsFromQuery]
   );
 
-  const filteredCards = useMemo(() => {
-    const finalCards = pipeline(
-      filterByName,
-      filterByLevel,
-      sortBy
-    )(initialCards);
+  const filterByAttribute = useCallback(
+    (cards: Card[]) => {
+      const { attribute } = paramsFromQuery;
+      if (!attribute) return cards;
 
-    return finalCards;
-  }, [initialCards, sortBy, filterByLevel, filterByName]);
+      return cards.filter((card) => {
+        return card.attribute === attribute;
+      });
+    },
+    [paramsFromQuery]
+  );
 
-  return filteredCards;
+  return pipeline(
+    filterByName,
+    filterByLevel,
+    filterByAttribute,
+    sortBy
+  )(initialCards);
 }
 
 export default useFilteredCards;

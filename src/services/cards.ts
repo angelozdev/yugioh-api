@@ -13,10 +13,12 @@ export async function getAll(options?: Options): Promise<Response<Card[]>> {
     level = "",
     sort,
     order = "asc",
+    attribute,
   } = options || {};
   const _level = level ? (level === "no-level" ? "" : level) : undefined;
   const { data } = await axios.get<Response<Card[]>>("/", {
     params: {
+      attribute,
       desc: fname,
       fname,
       level: _level,
