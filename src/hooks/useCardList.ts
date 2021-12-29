@@ -8,15 +8,17 @@ interface Options {
   level?: string;
   sort?: string;
   order?: string;
+  attribute?: string;
 }
 
-const CARDS_PER_PAGE = 32;
+export const CARDS_PER_PAGE = 16;
 
-function useCardList({ query, level, sort, order }: Options) {
+function useCardList({ query, level, sort, order, attribute }: Options) {
   const cardQuery = useInfiniteQuery(
-    ["card-list", { query, level, sort, order }],
+    ["card-list", { query, level, sort, order, attribute }],
     ({ pageParam }) =>
       cardsServices.getAll({
+        attribute,
         fname: query,
         level,
         num: CARDS_PER_PAGE,

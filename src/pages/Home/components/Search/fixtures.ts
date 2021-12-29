@@ -28,3 +28,38 @@ export const sortBy = [
     label: "ID",
   },
 ];
+
+export const attributes = [
+  {
+    value: "",
+    label: "No Attribute",
+  },
+  {
+    value: "DARK",
+    label: "Dark",
+  },
+  {
+    value: "LIGHT",
+    label: "Light",
+  },
+  {
+    value: "EARTH",
+    label: "Earth",
+  },
+  {
+    value: "FIRE",
+    label: "Fire",
+  },
+  {
+    value: "WATER",
+    label: "Water",
+  },
+  {
+    value: "WIND",
+    label: "Wind",
+  },
+  {
+    value: "DIVINE",
+    label: "Divine",
+  },
+];

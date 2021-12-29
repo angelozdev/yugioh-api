@@ -1,98 +1,32 @@
-import { Fragment, useEffect, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Fragment } from "react";
+import { Navigate } from "react-router-dom";
 
 // components
 import { CardItem, CardPlaceholder, Search } from "pages/Home/components";
 import { Check, Trash } from "components/icons";
 
 // utils
-import { useDeleteCardMutation } from "./hooks";
+import { useDeleteCardMutation, useFilteredCards } from "./hooks";
 import { useDeckQuery } from "hooks";
 import { useDeckContext } from "contexts/deck";
-import { Card } from "services/resources";
+import { CARDS_PER_PAGE } from "hooks/useCardList";
 
 function SingleDeck() {
-  const [searchParams] = useSearchParams();
   const { deckId } = useDeckContext();
-
   const { isLoading, isSuccess, data: deck } = useDeckQuery(deckId);
-  const [filteredCards, setFilteredCards] = useState<Card[]>([]);
+  const filteredCards = useFilteredCards(deck?.cards);
   const deleteCardMutation = useDeleteCardMutation();
-
-  useEffect(() => {
-    const paramsFromQuery = {
-      level: searchParams.get("level") || "",
-      sort: searchParams.get("sort") || "name",
-      order: searchParams.get("sortorder") || "asc",
-      query: searchParams.get("q") || "",
-    };
-
-    console.log({ paramsFromQuery });
-
-    let cards = deck?.cards || [];
-
-    cards = cards.filter((card) => {
-      if (!paramsFromQuery.level) return true;
-      if (paramsFromQuery.level === "no-level") return card.level === undefined;
-      if (paramsFromQuery.level)
-        return card.level === Number(paramsFromQuery.level);
-      return false;
-    });
-
-    cards.sort((a, b) => {
-      const { sort, order } = paramsFromQuery;
-      const isAsc = order === "asc";
-      if (sort === "name") {
-        return a.name.localeCompare(b.name) * (isAsc ? 1 : -1);
-      }
-
-      if (sort === "level") {
-        if (!a.level) return 1;
-        if (!b.level) return -1;
-        if (isAsc) return a.level - b.level;
-        return b.level - a.level;
-      }
-
-      if (sort === "atk") {
-        if (a.atk === undefined) return 1;
-        if (b.atk === undefined) return -1;
-        if (isAsc) return a.atk - b.atk;
-        return b.atk - a.atk;
-      }
-
-      if (sort === "def") {
-        if (a.def === undefined) return 1;
-        if (b.def === undefined) return -1;
-        if (isAsc) return a.def - b.def;
-        return b.def - a.def;
-      }
-
-      if (sort === "type") {
-        return a.type.localeCompare(b.type) * (isAsc ? 1 : -1);
-      }
-
-      if (sort === "id") {
-        return (
-          a.id.toString().localeCompare(b.id.toString()) * (isAsc ? 1 : -1)
-        );
-      }
-
-      return a.name.localeCompare(b.name) * (isAsc ? 1 : -1);
-    });
-
-    setFilteredCards(cards || []);
-  }, [deck?.cards, searchParams]);
 
   if (!deckId) return <Navigate to="/decks" replace />;
   return (
     <section className="container my-4">
-      <div>
+      <div className="my-4">
         <Search />
       </div>
 
       {isLoading && (
         <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
-          {Array(32)
+          {Array(CARDS_PER_PAGE)
             .fill({})
             .map((_, index) => (
               <CardPlaceholder key={index} />

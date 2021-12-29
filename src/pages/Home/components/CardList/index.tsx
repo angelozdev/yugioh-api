@@ -9,16 +9,18 @@ import { Check, Heart, Spin } from "components/icons";
 import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
 import { useAddCardMutation } from "./hooks";
 import { useDeckContext } from "contexts/deck";
+import { CARDS_PER_PAGE } from "hooks/useCardList";
 
 function CardList() {
   const { ids } = useDeckContext();
   const divRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
   const paramsFromQuery = {
+    attribute: searchParams.get("attribute") || undefined,
     level: searchParams.get("level") || "",
-    sort: searchParams.get("sort") || "name",
     order: searchParams.get("sortorder") || "asc",
     query: searchParams.get("q") || "",
+    sort: searchParams.get("sort") || "name",
   };
   const [debounceQuery, setQuery] = useDebounceState(
     paramsFromQuery.query,
@@ -106,7 +108,7 @@ function CardList() {
           )}
 
         {isLoading &&
-          Array(32)
+          Array(CARDS_PER_PAGE)
             .fill(null)
             .map((_, index) => <CardPlaceholder key={index} />)}
       </ul>
