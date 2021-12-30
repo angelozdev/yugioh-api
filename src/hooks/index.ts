@@ -1,3 +1,4 @@
+export { default as useBackToTop } from "./useBackToTop";
 export { default as useCardList } from "./useCardList";
 export { default as useDebounceState } from "./useDebounceState";
 export { default as useDeckQuery } from "./useDeckQuery";

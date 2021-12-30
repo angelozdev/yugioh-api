@@ -42,7 +42,7 @@ function App() {
       </Routes>
 
       {!!isFetching && (
-        <p className="fixed bottom-4 right-4 inline-flex items-center gap-2 bg-white p-1 rounded-full shadow-lg">
+        <p className="fixed bottom-4 left-4 inline-flex items-center gap-2 bg-white p-1 rounded-full shadow-lg">
           <span className="inline-block animate-ping w-4 h-4 bg-cyan-900 rounded-full" />
         </p>
       )}

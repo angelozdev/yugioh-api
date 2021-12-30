@@ -10,6 +10,7 @@ import { useDeleteCardMutation, useFilteredCards } from "./hooks";
 import { useDeckQuery } from "hooks";
 import { useDeckContext } from "contexts/deck";
 import { CARDS_PER_PAGE } from "hooks/useCardList";
+import { BackToTopButton } from "components";
 
 function SingleDeck() {
   const { deckId } = useDeckContext();
@@ -77,6 +78,8 @@ function SingleDeck() {
           </ul>
         </Fragment>
       )}
+
+      <BackToTopButton />
     </section>
   );
 }
