@@ -60,12 +60,14 @@ function SingleCard() {
   return (
     <section className="container">
       <div className="my-4">
-        <button
-          className="inline-flex mb-4 px-3 py-1 border rounded-sm hover:shadow"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft />
-        </button>
+        {state?.card && (
+          <button
+            className="inline-flex mb-4 px-3 py-1 border rounded-sm hover:shadow"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft />
+          </button>
+        )}
 
         {isLoading && <div>Loading...</div>}
 

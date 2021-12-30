@@ -1,5 +1,5 @@
-import { Route, Routes, Navigate } from "react-router-dom";
 import { Fragment } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { useIsFetching } from "react-query";
 import { ToastContainer } from "react-toastify";
 
