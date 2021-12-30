@@ -10,6 +10,7 @@ import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
 import { useAddCardMutation } from "./hooks";
 import { useDeckContext } from "contexts/deck";
 import { CARDS_PER_PAGE } from "hooks/useCardList";
+import { BackToTopButton } from "components";
 
 function CardList() {
   const { ids } = useDeckContext();
@@ -121,6 +122,8 @@ function CardList() {
           {hasNextPage ? isFetching && <Spin /> : "No more for now"}
         </div>
       </div>
+
+      <BackToTopButton />
     </div>
   );
 }
