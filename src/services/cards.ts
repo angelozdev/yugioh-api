@@ -18,7 +18,7 @@ export async function getAll(options?: Options): Promise<Response<Card[]>> {
   const _level = level ? (level === "no-level" ? "" : level) : undefined;
   const { data } = await axios.get<Response<Card[]>>("/", {
     params: {
-      attribute,
+      attribute: attribute || undefined,
       desc: fname,
       fname,
       level: _level,

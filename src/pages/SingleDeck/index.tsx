@@ -6,11 +6,11 @@ import { CardItem, CardPlaceholder, Search } from "pages/Home/components";
 import { Check, Trash } from "components/icons";
 
 // utils
-import { useDeleteCardMutation, useFilteredCards } from "./hooks";
-import { useDeckQuery } from "hooks";
-import { useDeckContext } from "contexts/deck";
-import { CARDS_PER_PAGE } from "hooks/useCardList";
 import { BackToTopButton } from "components";
+import { CARDS_PER_PAGE } from "hooks/useCardList";
+import { useDeckContext } from "contexts/deck";
+import { useDeckQuery } from "hooks";
+import { useDeleteCardMutation, useFilteredCards } from "./hooks";
 
 function SingleDeck() {
   const { deckId } = useDeckContext();
@@ -52,8 +52,9 @@ function SingleDeck() {
                   deleteCardMutation.isLoading &&
                   deleteCardMutation.variables === String(id);
 
-                const imageIndex =
-                  card_images.findIndex((image) => image.id === id) || 0;
+                const imageIndex = card_images.findIndex(
+                  (image) => image.id === id
+                );
 
                 return (
                   <CardItem
@@ -64,7 +65,7 @@ function SingleDeck() {
                     disabled={wasDeleted}
                     icon={wasDeleted ? Check : Trash}
                     id={id}
-                    imageIndex={imageIndex}
+                    imageIndex={imageIndex > -1 ? imageIndex : 0}
                     images={card_images}
                     isLoading={isLoading}
                     key={id}

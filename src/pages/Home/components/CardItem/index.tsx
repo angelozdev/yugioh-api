@@ -60,7 +60,7 @@ const CardItem = memo((props: Props) => {
   };
 
   return (
-    <li className="border rounded-md shadow-md hover:shadow-lg relative overflow-hidden">
+    <li className="border rounded-md shadow-md hover:shadow-lg relative overflow-hidden transition-shadow">
       <div className="w-full flex">
         <Link state={{ card }} to={`/cards/${id}`}>
           <figure className="shrink-0 basis-36 my-auto">
