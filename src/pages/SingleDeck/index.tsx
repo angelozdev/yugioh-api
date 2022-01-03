@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { Navigate } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 // components
 import { CardItem, CardPlaceholder, Search } from "pages/Home/components";
@@ -11,14 +11,32 @@ import { CARDS_PER_PAGE } from "hooks/useCardList";
 import { useDeckContext } from "contexts/deck";
 import { useDeckQuery } from "hooks";
 import { useDeleteCardMutation, useFilteredCards } from "./hooks";
+import decksServices from "services/decks";
 
 function SingleDeck() {
-  const { deckId } = useDeckContext();
-  const { isLoading, isSuccess, data: deck } = useDeckQuery(deckId);
-  const filteredCards = useFilteredCards(deck?.cards);
+  const { id: deckIdFromParams } = useParams();
+  const navigate = useNavigate();
+  const { deckId, setDeckId } = useDeckContext();
+  if (!deckIdFromParams) throw new Error("No deckIdFromParams");
+  const { isLoading, isSuccess, data: deck } = useDeckQuery(deckIdFromParams);
+  const { data: filteredCards } = useFilteredCards(deck?.cards);
   const deleteCardMutation = useDeleteCardMutation();
 
-  if (!deckId) return <Navigate to="/decks" replace />;
+  useEffect(() => {
+    !deckId &&
+      decksServices
+        .getById(deckIdFromParams)
+        .then((data) => {
+          if (!data) throw new Error("No deck");
+          setDeckId(data.id);
+        })
+        .catch(() => {
+          setDeckId("");
+          navigate("/decks", { replace: true });
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section className="container my-4">
       <div className="my-4">

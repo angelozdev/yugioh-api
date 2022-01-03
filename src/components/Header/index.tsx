@@ -1,10 +1,11 @@
 import { Logout } from "components/icons";
 import { useDeckContext } from "contexts/deck";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { routes } from "./fixtures";
 
 function Header() {
   const { deckId, setDeckId } = useDeckContext();
+  const navigate = useNavigate();
 
   return (
     <header className="shadow-md sticky top-0 bg-white z-50">
@@ -29,7 +30,10 @@ function Header() {
           {deckId && (
             <li className="ml-auto">
               <button
-                onClick={() => setDeckId("")}
+                onClick={() => {
+                  setDeckId("");
+                  navigate("/decks");
+                }}
                 className="p-2 inline-block"
               >
                 <Logout />

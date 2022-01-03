@@ -10,7 +10,7 @@ const pipeline = (...functions: ((cards: Card[]) => Card[])[]) => {
   };
 };
 
-function useFilteredCards(initialCards: Card[] = []): Card[] {
+function useFilteredCards(initialCards: Card[] = []): { data: Card[] } {
   const paramsFromQuery = useQueryParams();
 
   const filterByName = useCallback(
@@ -101,12 +101,14 @@ function useFilteredCards(initialCards: Card[] = []): Card[] {
     [paramsFromQuery]
   );
 
-  return pipeline(
-    filterByName,
-    filterByLevel,
-    filterByAttribute,
-    sortBy
-  )(initialCards);
+  return {
+    data: pipeline(
+      filterByName,
+      filterByLevel,
+      filterByAttribute,
+      sortBy
+    )(initialCards),
+  };
 }
 
 export default useFilteredCards;
