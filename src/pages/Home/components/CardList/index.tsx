@@ -1,12 +1,16 @@
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
 
 // components
 import { CardPlaceholder, CardItem, Search } from "../";
 import { Check, Heart, Spin } from "components/icons";
 
 // utils
-import { useCardList, useDebounceState, useIntersectionObserver } from "hooks";
+import {
+  useCardList,
+  useDebounceState,
+  useIntersectionObserver,
+  useQueryParams,
+} from "hooks";
 import { useAddCardMutation } from "./hooks";
 import { useDeckContext } from "contexts/deck";
 import { CARDS_PER_PAGE } from "hooks/useCardList";
@@ -15,18 +19,8 @@ import { BackToTopButton } from "components";
 function CardList() {
   const { ids } = useDeckContext();
   const divRef = useRef<HTMLDivElement>(null);
-  const [searchParams] = useSearchParams();
-  const paramsFromQuery = {
-    attribute: searchParams.get("attribute") || undefined,
-    level: searchParams.get("level") || "",
-    order: searchParams.get("sortorder") || "asc",
-    query: searchParams.get("q") || "",
-    sort: searchParams.get("sort") || "name",
-  };
-  const [debounceQuery, setQuery] = useDebounceState(
-    paramsFromQuery.query,
-    500
-  );
+  const paramsFromQuery = useQueryParams();
+  const [debounceQuery, setQuery] = useDebounceState(paramsFromQuery.q, 500);
   const {
     data,
     fetchNextPage,
@@ -52,8 +46,8 @@ function CardList() {
   );
 
   useEffect(() => {
-    setQuery(searchParams.get("q") || "");
-  }, [searchParams, setQuery]);
+    setQuery(paramsFromQuery.q || "");
+  }, [paramsFromQuery.q, setQuery]);
 
   return (
     <div className="container py-4">

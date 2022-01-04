@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useQueryParams } from "hooks";
+import { useCallback } from "react";
 
 // types
 import type { Card } from "services/resources";
@@ -10,27 +10,17 @@ const pipeline = (...functions: ((cards: Card[]) => Card[])[]) => {
   };
 };
 
-function useFilteredCards(initialCards: Card[] = []): Card[] {
-  const [searchParams] = useSearchParams();
-  const paramsFromQuery = useMemo(
-    () => ({
-      attribute: searchParams.get("attribute") || "",
-      level: searchParams.get("level") || "",
-      order: searchParams.get("sortorder") || "asc",
-      query: searchParams.get("q") || "",
-      sort: searchParams.get("sort") || "name",
-    }),
-    [searchParams]
-  );
+function useFilteredCards(initialCards: Card[] = []): { data: Card[] } {
+  const paramsFromQuery = useQueryParams();
 
   const filterByName = useCallback(
     (cards: Card[]) => {
-      const { query } = paramsFromQuery;
-      if (!query) return cards;
+      const { q } = paramsFromQuery;
+      if (!q) return cards;
 
       return cards.filter((card) => {
         const cardString = JSON.stringify(card);
-        return cardString.toLowerCase().includes(query.toLowerCase());
+        return cardString.toLowerCase().includes(q.toLowerCase());
       });
     },
     [paramsFromQuery]
@@ -111,12 +101,14 @@ function useFilteredCards(initialCards: Card[] = []): Card[] {
     [paramsFromQuery]
   );
 
-  return pipeline(
-    filterByName,
-    filterByLevel,
-    filterByAttribute,
-    sortBy
-  )(initialCards);
+  return {
+    data: pipeline(
+      filterByName,
+      filterByLevel,
+      filterByAttribute,
+      sortBy
+    )(initialCards),
+  };
 }
 
 export default useFilteredCards;

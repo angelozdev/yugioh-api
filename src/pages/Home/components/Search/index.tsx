@@ -1,15 +1,10 @@
+import { useQueryParams } from "hooks";
 import { useSearchParams } from "react-router-dom";
 import { sortBy, attributes } from "./fixtures";
 
 function Search() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const params = {
-    attribute: searchParams.get("attribute") || "",
-    level: searchParams.get("level") || "",
-    q: searchParams.get("q") || "",
-    sort: searchParams.get("sort") || "name",
-    sortorder: searchParams.get("sortorder") || "asc",
-  };
+  const { 1: setSearchParams } = useSearchParams();
+  const params = useQueryParams();
 
   const handleFilters = (name: string, value: string) => {
     setSearchParams({ ...params, [name]: value });
@@ -68,12 +63,9 @@ function Search() {
       <input
         className="border py-2 px-4 uppercase cursor-pointer rounded-none"
         type="button"
-        value={params["sortorder"]}
+        value={params["order"]}
         onClick={() =>
-          handleFilters(
-            "sortorder",
-            params.sortorder === "asc" ? "desc" : "asc"
-          )
+          handleFilters("order", params.order === "asc" ? "desc" : "asc")
         }
       />
     </div>

@@ -1,24 +1,42 @@
-import { Fragment } from "react";
-import { Navigate } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 // components
 import { CardItem, CardPlaceholder, Search } from "pages/Home/components";
 import { Check, Trash } from "components/icons";
 
 // utils
-import { useDeleteCardMutation, useFilteredCards } from "./hooks";
-import { useDeckQuery } from "hooks";
-import { useDeckContext } from "contexts/deck";
-import { CARDS_PER_PAGE } from "hooks/useCardList";
 import { BackToTopButton } from "components";
+import { CARDS_PER_PAGE } from "hooks/useCardList";
+import { useDeckContext } from "contexts/deck";
+import { useDeckQuery } from "hooks";
+import { useDeleteCardMutation, useFilteredCards } from "./hooks";
+import decksServices from "services/decks";
 
 function SingleDeck() {
-  const { deckId } = useDeckContext();
-  const { isLoading, isSuccess, data: deck } = useDeckQuery(deckId);
-  const filteredCards = useFilteredCards(deck?.cards);
+  const { id: deckIdFromParams } = useParams();
+  const navigate = useNavigate();
+  const { deckId, setDeckId } = useDeckContext();
+  if (!deckIdFromParams) throw new Error("No deckIdFromParams");
+  const { isLoading, isSuccess, data: deck } = useDeckQuery(deckIdFromParams);
+  const { data: filteredCards } = useFilteredCards(deck?.cards);
   const deleteCardMutation = useDeleteCardMutation();
 
-  if (!deckId) return <Navigate to="/decks" replace />;
+  useEffect(() => {
+    !deckId &&
+      decksServices
+        .getById(deckIdFromParams)
+        .then((data) => {
+          if (!data) throw new Error("No deck");
+          setDeckId(data.id);
+        })
+        .catch(() => {
+          setDeckId("");
+          navigate("/decks", { replace: true });
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section className="container my-4">
       <div className="my-4">
@@ -52,8 +70,9 @@ function SingleDeck() {
                   deleteCardMutation.isLoading &&
                   deleteCardMutation.variables === String(id);
 
-                const imageIndex =
-                  card_images.findIndex((image) => image.id === id) || 0;
+                const imageIndex = card_images.findIndex(
+                  (image) => image.id === id
+                );
 
                 return (
                   <CardItem
@@ -64,7 +83,7 @@ function SingleDeck() {
                     disabled={wasDeleted}
                     icon={wasDeleted ? Check : Trash}
                     id={id}
-                    imageIndex={imageIndex}
+                    imageIndex={imageIndex > -1 ? imageIndex : 0}
                     images={card_images}
                     isLoading={isLoading}
                     key={id}
