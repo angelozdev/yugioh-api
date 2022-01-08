@@ -7,4 +7,8 @@ export const routes = [
     path: "/decks",
     label: "Decks",
   },
+  {
+    path: "/about",
+    label: "About",
+  },
 ];
