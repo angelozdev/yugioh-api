@@ -1,2 +1,5 @@
-export { default as BackToTopButton } from "./BackToTopButton";
-export { default as Header } from "./Header";
+import { lazy } from "react";
+
+export { SpinnerPage } from "./SpinnerPage";
+export const BackToTopButton = lazy(() => import("./BackToTopButton"));
+export const Header = lazy(() => import("./Header/Header"));

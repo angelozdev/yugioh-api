@@ -1,4 +1,6 @@
-export { default as Decks } from "./Decks";
-export { default as Home } from "./Home";
-export { default as SingleCard } from "./SingleCard";
-export { default as SingleDeck } from "./SingleDeck";
+import { lazy } from "react";
+
+export const Home = lazy(() => import("./Home"));
+export const SingleCard = lazy(() => import("./SingleCard"));
+export const SingleDeck = lazy(() => import("./SingleDeck"));
+export const Decks = lazy(() => import("./Decks"));

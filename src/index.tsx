@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { render } from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClientProvider } from "react-query";
@@ -10,6 +10,7 @@ import DeckProvider from "./contexts/deck/Provider";
 
 // components
 import App from "./App";
+import { SpinnerPage } from "components";
 
 // utils
 import queryClient from "react-query-client";
@@ -25,7 +26,9 @@ render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <DeckProvider>
-          <App />
+          <Suspense fallback={<SpinnerPage />}>
+            <App />
+          </Suspense>
         </DeckProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
