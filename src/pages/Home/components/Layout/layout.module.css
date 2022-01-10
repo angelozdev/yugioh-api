@@ -1,0 +1,13 @@
+.layout-container {
+  @apply container py-4;
+}
+
+.header {
+  @apply py-4 text-center;
+}
+
+.content {
+}
+
+.footer {
+}
