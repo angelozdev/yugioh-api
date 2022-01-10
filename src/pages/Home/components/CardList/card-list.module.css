@@ -1,0 +1,3 @@
+.card-list {
+  @apply grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4;
+}
