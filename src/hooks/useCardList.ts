@@ -1,4 +1,5 @@
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { queryKeys } from "libs/react-query";
 
 // utils
 import cardsServices from "services/cards";
@@ -15,9 +16,9 @@ export const CARDS_PER_PAGE = 16;
 
 function useCardList({ query, level, sort, order, attribute }: Options) {
   const cardQuery = useInfiniteQuery(
-    ["card-list", { query, level, sort, order, attribute }],
+    queryKeys.cards.list({ query, level, sort, order, attribute }),
     ({ pageParam }) =>
-      cardsServices.getAll({
+      cardsServices.getMany({
         attribute,
         fname: query,
         level,

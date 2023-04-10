@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 // components
 import { CardPlaceholder, CardItem, Search } from "../";
@@ -11,10 +11,12 @@ import {
   useIntersectionObserver,
   useQueryParams,
 } from "hooks";
-import { useAddCardMutation } from "./hooks";
 import { useDeckContext } from "contexts/deck";
 import { CARDS_PER_PAGE } from "hooks/useCardList";
 import { BackToTopButton } from "components";
+import { mutations } from "libs/react-query/hooks";
+import { Card } from "services/resources";
+import Adapter from "utils/adapter";
 
 function CardList() {
   const { ids } = useDeckContext();
@@ -25,19 +27,35 @@ function CardList() {
     data,
     fetchNextPage,
     hasNextPage,
-    isError,
     isFetching,
     isLoading,
     isSuccess,
+    isFetchingNextPage,
   } = useCardList({ ...paramsFromQuery, query: debounceQuery });
 
-  const addCardMutation = useAddCardMutation();
+  const flattedCardList = useMemo(() => {
+    const cardList =
+      data?.pages?.reduce((acc, curr) => {
+        const { data } = curr;
+        data.forEach((card) => {
+          card.card_images.forEach((image) => {
+            acc.push({ ...card, id: image.id, card_images: [image] });
+          });
+        });
+
+        return acc;
+      }, [] as Card[]) ?? [];
+
+    const { all } = new Adapter(cardList, ({ id }) => String(id));
+    return all;
+  }, [data]);
+
+  const { mutate: addCard } = mutations.useAddCard();
 
   useIntersectionObserver(
     divRef,
     {
-      onVisible: () =>
-        !isError && !isFetching && hasNextPage && fetchNextPage(),
+      onVisible: () => !isFetchingNextPage && hasNextPage && fetchNextPage(),
     },
     {
       rootMargin: "500px",
@@ -52,55 +70,42 @@ function CardList() {
   return (
     <div className="container py-4">
       <div className="py-4 text-center">
-        <Search />
+        <Search localStorageKey="cardListSearchParams" />
       </div>
       <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
         {isSuccess &&
-          data?.pages?.map((page) =>
-            page.data?.map((card) => {
-              const {
-                archetype,
-                atk,
-                attribute,
-                card_images,
-                def,
-                desc,
-                name,
-                type,
-                level,
-              } = card;
-              return card_images.map(({ id }, index) => {
-                const wasAdded =
-                  addCardMutation.isSuccess &&
-                  addCardMutation.variables?.card.id === id;
-
-                const isLoading =
-                  addCardMutation.isLoading &&
-                  addCardMutation.variables?.card.id === id;
-
-                return (
-                  <CardItem
-                    archetype={archetype}
-                    attack={atk}
-                    attribute={attribute}
-                    defense={def}
-                    description={desc}
-                    disabled={wasAdded || ids.has(id)}
-                    icon={wasAdded || ids.has(id) ? Check : Heart}
-                    id={id}
-                    imageIndex={index}
-                    images={card_images}
-                    isLoading={isLoading}
-                    key={id}
-                    level={level}
-                    name={name}
-                    onClickIcon={addCardMutation.onAddCard}
-                    type={type}
-                  />
-                );
-              });
-            })
-          )}
+          flattedCardList.map((card) => {
+            const {
+              archetype,
+              atk,
+              attribute,
+              card_images,
+              def,
+              desc,
+              name,
+              type,
+              level,
+              id,
+            } = card;
+            return (
+              <CardItem
+                archetype={archetype}
+                attack={atk}
+                attribute={attribute}
+                defense={def}
+                description={desc}
+                disabled={ids.has(id)}
+                icon={ids.has(id) ? Check : Heart}
+                id={id}
+                images={card_images}
+                key={id}
+                level={level}
+                name={name}
+                onClickIcon={() => addCard({ ...card, id: String(id) })}
+                type={type}
+              />
+            );
+          })}
 
         {isLoading &&
           Array(CARDS_PER_PAGE)

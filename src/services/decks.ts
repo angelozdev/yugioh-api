@@ -1,4 +1,4 @@
-import db from "firebase-client/db";
+import db from "libs/firebase/db";
 import {
   collection,
   deleteDoc,
@@ -12,10 +12,11 @@ import {
 
 // types
 import type { Card, Deck } from "services/resources";
+import { sleepWithError } from "utils/sleep";
 
 const decksRef = collection(db, "decks");
 
-export async function getAll(): Promise<Deck[]> {
+async function getMany(): Promise<Deck[]> {
   const querySnapshot = await getDocs(decksRef);
   const decks = querySnapshot.docs.map((doc) => ({
     id: doc.id,
@@ -25,7 +26,7 @@ export async function getAll(): Promise<Deck[]> {
   return decks;
 }
 
-export async function getById(id: string): Promise<Deck | null> {
+async function getById(id: string): Promise<Deck | null> {
   const deckRef = doc(db, "decks", id);
   const deck = await getDoc(deckRef);
   const cardsRef = collection(deckRef, "cards");
@@ -45,7 +46,9 @@ export async function getById(id: string): Promise<Deck | null> {
   } as Deck;
 }
 
-export async function addCard(deckId: string, card: Card) {
+async function addById(deckId: string, card: Card) {
+  // await sleepWithError(1000, "Error adding card. Please try again.");
+
   if (!card?.id) throw new Error("Card must have an id");
   const deckRef = doc(
     collection(db, "decks", deckId, "cards"),
@@ -56,7 +59,9 @@ export async function addCard(deckId: string, card: Card) {
   return card;
 }
 
-export async function deleteCard(deckId: string, cardId: string) {
+async function deleteById(deckId: string, cardId: string) {
+  // await sleepWithError(1000, "Error deleting card. Please try again.");
+
   const deckRef = doc(db, "decks", deckId);
   const cardRef = doc(deckRef, "cards", cardId);
   const card = await getDoc(cardRef);
@@ -68,5 +73,6 @@ export async function deleteCard(deckId: string, cardId: string) {
   } as Card;
 }
 
-const decksService = { getAll, getById, addCard, deleteCard };
+const decksService = { getMany, getById, addById, deleteById };
+
 export default decksService;

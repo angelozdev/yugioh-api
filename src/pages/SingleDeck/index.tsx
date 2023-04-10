@@ -10,17 +10,20 @@ import { BackToTopButton } from "components";
 import { CARDS_PER_PAGE } from "hooks/useCardList";
 import { useDeckContext } from "contexts/deck";
 import { useDeckQuery } from "hooks";
-import { useDeleteCardMutation, useFilteredCards } from "./hooks";
+import { useFilteredCards } from "./hooks";
 import decksServices from "services/decks";
+import { mutations } from "libs/react-query/hooks";
 
 function SingleDeck() {
   const { id: deckIdFromParams } = useParams();
-  const navigate = useNavigate();
-  const { deckId, setDeckId } = useDeckContext();
   if (!deckIdFromParams) throw new Error("No deckIdFromParams");
+
+  const navigate = useNavigate();
+  const { deckId, setDeckId, ids } = useDeckContext();
   const { isLoading, isSuccess, data: deck } = useDeckQuery(deckIdFromParams);
   const { data: filteredCards } = useFilteredCards(deck?.cards);
-  const deleteCardMutation = useDeleteCardMutation();
+  const { isSuccess: isDeleteSuccess, mutate: deleteCard } =
+    mutations.useDeleteCard();
 
   useEffect(() => {
     !deckId &&
@@ -40,7 +43,7 @@ function SingleDeck() {
   return (
     <section className="container my-4">
       <div className="my-4">
-        <Search />
+        <Search localStorageKey="singleDeckSearchParams" />
       </div>
 
       {isLoading && (
@@ -62,33 +65,19 @@ function SingleDeck() {
           <ul className="grid sm:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4">
             {filteredCards.map(
               ({ id, name, archetype, desc, card_images, atk, def, type }) => {
-                const wasDeleted =
-                  deleteCardMutation.isSuccess &&
-                  deleteCardMutation.variables === String(id);
-
-                const isLoading =
-                  deleteCardMutation.isLoading &&
-                  deleteCardMutation.variables === String(id);
-
-                const imageIndex = card_images.findIndex(
-                  (image) => image.id === id
-                );
-
                 return (
                   <CardItem
                     archetype={archetype}
                     attack={atk}
                     defense={def}
                     description={desc}
-                    disabled={wasDeleted}
-                    icon={wasDeleted ? Check : Trash}
+                    disabled={!ids.has(id)}
+                    icon={!ids.has(id) ? Check : Trash}
                     id={id}
-                    imageIndex={imageIndex > -1 ? imageIndex : 0}
                     images={card_images}
-                    isLoading={isLoading}
                     key={id}
                     name={name}
-                    onClickIcon={deleteCardMutation.onDeleteCard}
+                    onClickIcon={() => deleteCard(String(id))}
                     type={type}
                   />
                 );

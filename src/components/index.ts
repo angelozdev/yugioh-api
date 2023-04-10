@@ -1,5 +1,3 @@
-import { lazy } from "react";
-
-export { SpinnerPage } from "./SpinnerPage";
-export const BackToTopButton = lazy(() => import("./BackToTopButton"));
-export const Header = lazy(() => import("./Header/Header"));
+export { BackToTopButton } from "./back-to-top";
+export { Header } from "./header";
+export { Spinner } from "./spinner";

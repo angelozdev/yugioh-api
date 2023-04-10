@@ -20,7 +20,6 @@ interface Props {
   disabled?: boolean;
   icon?: FunctionComponent;
   id: Card["id"];
-  imageIndex: number;
   images: Card["card_images"];
   isLoading?: boolean;
   level?: Card["level"];
@@ -39,7 +38,6 @@ const CardItem = memo((props: Props) => {
     disabled = false,
     icon: Icon,
     id,
-    imageIndex = 0,
     images,
     isLoading = false,
     level,
@@ -55,7 +53,6 @@ const CardItem = memo((props: Props) => {
     id,
     type,
     archetype,
-    imageIndex,
     level,
   };
 
@@ -69,7 +66,7 @@ const CardItem = memo((props: Props) => {
               className="aspect-[28/41]"
               height={246}
               loading="lazy"
-              src={images[imageIndex].image_url_small}
+              src={images[0].image_url_small}
               title={name}
               width={168}
             />
@@ -79,9 +76,6 @@ const CardItem = memo((props: Props) => {
         <div className="grow basis-32 p-4">
           <div className="flex justify-between items-center gap-1">
             <h3 title={name} className="text-lg font-bold line-clamp-1">
-              {imageIndex > 0 && (
-                <span className="text-sm">({imageIndex + 1})</span>
-              )}{" "}
               <span>{name}</span>
             </h3>
 

@@ -1,8 +1,8 @@
+import "react-toastify/dist/ReactToastify.min.css";
+import "./index.css";
+
 import { StrictMode, Suspense } from "react";
-import { render } from "react-dom";
-import reportWebVitals from "./reportWebVitals";
-import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 // Providers
@@ -10,34 +10,24 @@ import DeckProvider from "./contexts/deck/Provider";
 
 // components
 import App from "./App";
-import { SpinnerPage } from "components";
+import { Spinner } from "components";
+import { QueryProvider } from "libs/react-query";
 
-// utils
-import queryClient from "react-query-client";
+const $rootElement = document.getElementById("root");
 
-// styles
-import "./index.css";
-import "react-toastify/dist/ReactToastify.min.css";
+if (!$rootElement) throw new Error("No root element");
+const root = createRoot($rootElement);
 
-const $root = document.getElementById("root");
-
-render(
+root.render(
   <StrictMode>
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
+      <QueryProvider>
         <DeckProvider>
-          <Suspense fallback={<SpinnerPage />}>
+          <Suspense fallback={<Spinner />}>
             <App />
           </Suspense>
         </DeckProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      </QueryProvider>
     </BrowserRouter>
-  </StrictMode>,
-  $root
+  </StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

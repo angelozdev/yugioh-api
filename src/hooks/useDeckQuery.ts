@@ -1,17 +1,18 @@
-import { useQuery, UseQueryOptions } from "react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 // utils
 import decksService from "services/decks";
+import { queryKeys } from "libs/react-query";
 
 // types
 import type { Deck } from "services/resources";
 
 function useDeckQuery(
   deckId: string,
-  options?: UseQueryOptions<Deck | null, unknown, Deck, [string, object]>
+  options?: UseQueryOptions<Deck | null, unknown, Deck, string[]>
 ) {
   const deckQuery = useQuery(
-    ["deck", { id: deckId }],
+    queryKeys.decks.details(deckId),
     () => decksService.getById(deckId),
     { staleTime: Infinity, enabled: !!deckId, ...options }
   );

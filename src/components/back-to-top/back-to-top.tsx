@@ -1,8 +1,8 @@
 import { ArrowUp } from "components/icons";
-import { useBackToTop } from "hooks";
+import useBackToTop from "./use-back-to-top";
 
 function BackToTopButton() {
-  const { isVisible, onBackToTop } = useBackToTop({ threshold: 500 });
+  const { isVisible, backToTop } = useBackToTop({ threshold: 500 });
 
   return (
     <div
@@ -10,7 +10,7 @@ function BackToTopButton() {
         isVisible ? "right-3" : "-right-full"
       }`}
     >
-      <button className="p-2" onClick={() => onBackToTop()}>
+      <button className="p-2" onClick={() => backToTop()}>
         <ArrowUp />
       </button>
     </div>

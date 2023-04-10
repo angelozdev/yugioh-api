@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { useIsFetching } from "react-query";
+import { useIsFetching } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 
 // pages
@@ -10,11 +10,9 @@ import { Decks, Home, SingleCard, SingleDeck } from "pages";
 import { Header } from "components";
 
 // utils
-import { usePrefetchDeck } from "hooks";
 import { useDeckContext } from "contexts/deck";
 
 function App() {
-  usePrefetchDeck();
   const { deckId } = useDeckContext();
   const isFetching = useIsFetching();
   return (

@@ -1,14 +1,24 @@
-import { useQueryParams } from "hooks";
+import { useEffectOnce, useLocalStorage, useQueryParams } from "hooks";
 import { useSearchParams } from "react-router-dom";
 import { sortBy, attributes } from "./fixtures";
 
-function Search() {
-  const { 1: setSearchParams } = useSearchParams();
+function Search({ localStorageKey = "searchParams" }) {
   const params = useQueryParams();
+  const [searchParamsFromLS, setSearchParamsFromSL] = useLocalStorage(
+    localStorageKey,
+    { defaultValue: params }
+  );
+  const { 1: setSearchParams } = useSearchParams(searchParamsFromLS);
 
   const handleFilters = (name: string, value: string) => {
-    setSearchParams({ ...params, [name]: value });
+    const newParams = { ...params, [name]: value };
+    setSearchParams(newParams);
+    setSearchParamsFromSL(newParams);
   };
+
+  useEffectOnce(() => {
+    setSearchParams(searchParamsFromLS);
+  });
 
   return (
     <div className="inline-flex gap-2 overflow-x-scroll w-full no-scrollbar">

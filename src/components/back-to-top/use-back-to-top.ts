@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 function useBackToTop({ threshold = 0 }) {
   const [isVisible, setIsVisible] = useState(false);
 
-  const onBackToTop = useCallback(() => {
+  const backToTop = useCallback(() => {
     if (window.scrollY > threshold) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -19,7 +19,7 @@ function useBackToTop({ threshold = 0 }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [threshold]);
 
-  return { isVisible, onBackToTop };
+  return { isVisible, backToTop };
 }
 
 export default useBackToTop;
